@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medyumistik — Tarot Falı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050303;
+    --black-2:#0c0906;
+    --gold:#c9a24b;
+    --gold-bright:#e6c477;
+    --gold-dim:#8a6f36;
+    --cream:#f2e8d5;
+    --wine:#2b0f0a;
+    --line: rgba(201,162,75,0.28);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 50% -10%, #1a120a 0%, transparent 55%),
+      radial-gradient(ellipse at 15% 100%, #150e08 0%, transparent 50%),
+      var(--black);
+    color:var(--cream);
+    font-family:'EB Garamond', serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  #stars{position:fixed; inset:0; z-index:0; pointer-events:none;}
+  .wrap{position:relative; z-index:1; max-width:980px; margin:0 auto; padding:0 24px 100px;}
+
+  /* HERO */
+  header{text-align:center; padding:56px 16px 20px;}
+  .logo-ring{
+    width:132px; height:132px; margin:0 auto 22px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    padding:6px;
+    box-shadow:0 0 0 1px rgba(201,162,75,.08), 0 0 40px rgba(201,162,75,.15);
+  }
+  .logo-ring img{
+    width:100%; height:100%; border-radius:50%; display:block;
+    object-fit:cover;
+  }
+  .eyebrow{
+    font-family:'Cinzel',serif; letter-spacing:.35em; text-transform:uppercase;
+    font-size:11px; color:var(--gold); opacity:.9; margin-bottom:12px;
+  }
+  h1{
+    font-family:'Cinzel',serif; font-weight:700; font-size:clamp(32px,6vw,52px);
+    margin:0 0 6px; color:var(--gold-bright);
+    text-shadow:0 0 30px rgba(230,196,119,.22);
+    letter-spacing:.03em;
+  }
+  .brand-tag{
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--gold-dim); margin-bottom:18px;
+  }
+  .sub{
+    font-style:italic; font-size:18px; color:#b9a17d; max-width:520px;
+    margin:0 auto; line-height:1.6;
+  }
+  .rule{
+    width:160px; height:1px; margin:28px auto 0;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    position:relative;
+  }
+  .rule::after{
+    content:'✦'; position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%); color:var(--gold); font-size:11px;
+    background:var(--black); padding:0 10px;
+  }
+
+  /* SPREAD PICKER */
+  .picker{
+    display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+    margin:40px 0 8px;
+  }
+  .spread-btn{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:.08em;
+    background:transparent; color:var(--cream); border:1px solid var(--line);
+    padding:14px 24px; border-radius:2px; cursor:pointer;
+    transition:all .25s ease; text-transform:uppercase;
+  }
+  .spread-btn:hover{border-color:var(--gold); color:var(--gold-bright); background:rgba(201,162,75,.06);}
+  .spread-btn.active{background:var(--gold); color:#150e08; border-color:var(--gold);}
+  .spread-desc{
+    text-align:center; color:#9a835e; font-size:15px; font-style:italic;
+    min-height:22px; margin-bottom:10px;
+  }
+
+  /* STAGE */
+  .stage{ text-align:center; margin-top:26px; }
+  .instructions{
+    font-family:'Cinzel',serif; text-transform:uppercase; font-size:12px;
+    color:#9a835e; letter-spacing:.08em; margin-bottom:26px;
+  }
+  .counter{color:var(--gold-bright);}
+
+  .fan{
+    display:flex; justify-content:center; align-items:flex-end;
+    flex-wrap:wrap; gap:0; min-height:230px; position:relative;
+  }
+  .card-slot{
+    width:78px; height:126px; margin:0 -18px; cursor:pointer;
+    position:relative; perspective:1000px;
+    transition:transform .35s ease, margin .35s ease;
+  }
+  .card-slot:hover{ transform:translateY(-14px); }
+  .card-slot.taken{ opacity:0; pointer-events:none; width:0; margin:0; }
+
+  .card-inner{
+    width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    transition:transform .7s cubic-bezier(.4,.2,.2,1);
+    border-radius:8px;
+  }
+  .card-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:8px; display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .card-back{
+    background:
+      repeating-linear-gradient(45deg, var(--wine) 0 6px, #1a0703 6px 12px);
+    border:1px solid var(--gold);
+    box-shadow:0 6px 16px rgba(0,0,0,.6), inset 0 0 0 3px rgba(201,162,75,.15);
+  }
+  .card-back::after{
+    content:'☾'; color:var(--gold); font-size:22px; opacity:.85;
+  }
+
+  /* Reveal row (chosen cards, enlarged) */
+  .revealed{
+    display:flex; gap:28px; justify-content:center; flex-wrap:wrap;
+    margin-top:56px;
+  }
+  .rev-card{ width:180px; }
+  .rev-card .position-label{
+    font-family:'Cinzel',serif; font-size:11px; letter-spacing:.2em;
+    color:var(--gold); text-transform:uppercase; margin-bottom:10px;
+  }
+  .rev-flip{
+    width:180px; height:290px; perspective:1200px; margin:0 auto;
+  }
+  .rev-inner{
+    width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    transition:transform .8s cubic-bezier(.4,.2,.2,1);
+  }
+  .rev-inner.flipped{ transform:rotateY(180deg); }
+  .rev-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:10px;
+  }
+  .rev-back{
+    background:repeating-linear-gradient(45deg, var(--wine) 0 8px, #1a0703 8px 16px);
+    border:1.5px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.6);
+  }
+  .rev-back span{ color:var(--gold); font-size:36px; }
+  .rev-front{
+    transform:rotateY(180deg);
+    background:linear-gradient(160deg,#171008,#0a0704);
+    border:1.5px solid var(--gold-bright);
+    box-shadow:0 10px 34px rgba(0,0,0,.65), 0 0 24px rgba(230,196,119,.16);
+    padding:16px 14px; display:flex; flex-direction:column; align-items:center; text-align:center;
+  }
+  .rev-symbol{ font-size:34px; margin-bottom:8px; color:var(--gold-bright); }
+  .rev-name{ font-family:'Cinzel',serif; font-size:14px; color:var(--gold-bright); margin-bottom:4px; line-height:1.3; }
+  .rev-orient{ font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:#9a835e; margin-bottom:10px; }
+  .rev-orient.reversed{ color:#b96a5a; }
+  .rev-keywords{ font-size:12px; color:var(--cream); opacity:.85; line-height:1.5; font-style:italic; }
+
+  .again-wrap{ text-align:center; margin-top:52px; }
+  .again-btn{
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:.15em; text-transform:uppercase;
+    background:transparent; border:1px solid var(--gold); color:var(--gold-bright);
+    padding:13px 30px; border-radius:2px; cursor:pointer; transition:all .25s;
+    opacity:0; pointer-events:none;
+  }
+  .again-btn.show{ opacity:1; pointer-events:auto; }
+  .again-btn:hover{ background:var(--gold); color:#150e08; }
+
+  footer{
+    text-align:center; margin-top:80px; padding-top:24px;
+    border-top:1px solid var(--line);
+    color:#7a674a; font-size:12.5px; font-style:italic; opacity:.8;
+  }
+  footer .brand{ color:var(--gold-dim); font-style:normal; font-family:'Cinzel',serif; letter-spacing:.1em; font-size:11px; display:block; margin-top:6px;}
+
+  @media (max-width:560px){
+    .card-slot{ width:52px; height:86px; margin:0 -14px; }
+    .rev-flip, .rev-card{ width:140px; }
+    .rev-flip{ height:225px; }
+  }
+
+  /* INTAKE GATE */
+  #gate{
+    position:fixed; inset:0; z-index:50;
+    background:
+      radial-gradient(ellipse at 50% -10%, #1a120a 0%, transparent 55%),
+      var(--black);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  #gate.hidden{ display:none; }
+  .gate-box{
+    max-width:380px; width:100%; text-align:center;
+  }
+  .gate-box .logo-ring{ width:96px; height:96px; margin:0 auto 20px; }
+  .gate-box h2{
+    font-family:'Cinzel',serif; font-size:22px; color:var(--gold-bright);
+    margin:0 0 8px; letter-spacing:.02em;
+  }
+  .gate-box p{
+    color:#b9a17d; font-style:italic; font-size:15px; margin:0 0 30px; line-height:1.6;
+  }
+  .field{ text-align:left; margin-bottom:18px; }
+  .field label{
+    display:block; font-family:'Cinzel',serif; font-size:11px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--gold-dim); margin-bottom:8px;
+  }
+  .field input{
+    width:100%; background:rgba(255,255,255,.03); border:1px solid var(--line);
+    color:var(--cream); font-family:'EB Garamond',serif; font-size:16px;
+    padding:12px 14px; border-radius:2px; outline:none;
+  }
+  .field input:focus{ border-color:var(--gold); }
+  .field input::placeholder{ color:#5c4f3a; }
+  .gate-error{
+    color:#c97a6a; font-size:13px; margin:-6px 0 16px; min-height:16px; font-style:italic;
+  }
+  .gate-btn{
+    width:100%; font-family:'Cinzel',serif; font-size:13px; letter-spacing:.12em;
+    text-transform:uppercase; background:var(--gold); color:#150e08; border:none;
+    padding:15px; border-radius:2px; cursor:pointer; transition:all .25s;
+  }
+  .gate-btn:hover{ background:var(--gold-bright); }
+  .gate-note{ margin-top:18px; font-size:11.5px; color:#6b5c42; }
+
+  .app-hidden{ display:none; }
+
+  .sent-note{
+    margin-top:18px; font-size:13px; color:var(--gold-dim); font-style:italic;
+    opacity:0; transition:opacity .5s;
+  }
+  .sent-note.show{ opacity:1; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <div class="logo-ring"><img src="data:image/jpeg;base64,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" alt="Medyumistik"></div>
+    <h2>Fala Başlamadan Önce</h2>
+    <p>Kartların seninle konuşabilmesi için önce seni tanısın.</p>
+    <div class="field">
+      <label for="gateName">Ad Soyad</label>
+      <input type="text" id="gateName" placeholder="Adınız Soyadınız" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="gateBirth">Doğum Tarihi</label>
+      <input type="date" id="gateBirth" autocomplete="bday">
+    </div>
+    <p class="gate-error" id="gateError"></p>
+    <button class="gate-btn" id="gateSubmit">Falıma Başla</button>
+    <p class="gate-note">Bilgilerin yalnızca falının size özel olması için kullanılır.</p>
+  </div>
+</div>
+
+<canvas id="stars"></canvas>
+<div class="wrap app-hidden" id="appWrap">
+  <header>
+    <div class="logo-ring"><img src="data:image/jpeg;base64,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" alt="Medyumistik"></div>
+    <div class="eyebrow">Fal · Tarot · Enerji</div>
+    <h1>Medyumistik</h1>
+    <div class="brand-tag">Kader Kapıları</div>
+    <p class="sub">Zihnini bir soruya odakla, ardından kartların seni bulmasına izin ver.</p>
+    <div class="rule"></div>
+  </header>
+
+  <div class="picker" id="picker">
+    <button class="spread-btn active" data-spread="1">Tek Kart</button>
+    <button class="spread-btn" data-spread="3">Geçmiş · Şimdi · Gelecek</button>
+  </div>
+  <p class="spread-desc" id="spreadDesc">Günün özüne dair tek, net bir mesaj.</p>
+
+  <div class="stage">
+    <p class="instructions" id="instructions">Kartları karıştırmak için dokun, sonra <span class="counter" id="counterText">1</span> kart seç</p>
+    <div class="fan" id="fan"></div>
+  </div>
+
+  <div class="revealed" id="revealed"></div>
+
+  <div class="again-wrap">
+    <button class="again-btn" id="againBtn">Kartları Yeniden Karıştır</button>
+    <p class="sent-note" id="sentNote">✦ Falın Medyumistik'e iletildi</p>
+  </div>
+
+  <footer>
+    Bu sayfa yalnızca eğlence ve öz-düşünme amaçlıdır; önemli kararlarını tarot yorumlarına dayandırma.
+    <span class="brand">MEDYUMİSTİK</span>
+  </footer>
+</div>
+
+<script>
+/* ---------- Yıldız arka planı ---------- */
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const stars = Array.from({length:130}, () => ({
+  x: Math.random()*window.innerWidth,
+  y: Math.random()*window.innerHeight,
+  r: Math.random()*1.3+0.2,
+  a: Math.random(),
+  speed: Math.random()*0.015+0.003
+}));
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const s of stars){
+    s.a += s.speed;
+    const op = (Math.sin(s.a)+1)/2*0.7+0.15;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(230,196,119,${op})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+/* ---------- Tarot Destesi (78 kart) ---------- */
+const major = [
+  ["Deli","Yeni başlangıçlar, saf güven, bilinmeyene adım","Dikkatsizlik, plansızlık, risk körlüğü","🃏"],
+  ["Büyücü","İrade gücü, beceri, elindeki araçları kullanmak","Hile, potansiyeli boşa harcamak","🪄"],
+  ["Azize","İçgörü, sezgi, gizli bilgi","Bastırılmış sezgi, yüzeysellik","🌙"],
+  ["İmparatoriçe","Bolluk, yaratıcılık, besleyicilik","Tıkanıklık, aşırı bağımlılık","🌿"],
+  ["İmparator","Yapı, otorite, disiplin","Katılık, kontrol saplantısı","👑"],
+  ["Aziz","Gelenek, rehberlik, öğreti","Dogmatizm, kuralları sorgulama ihtiyacı","🕊"],
+  ["Aşıklar","Seçim, uyum, değerler birliği","Uyumsuzluk, kararsızlık","💞"],
+  ["Savaş Arabası","Azim, zafer, yön belirlemek","Kontrol kaybı, dağınık enerji","🏇"],
+  ["Güç","İç güç, cesaret, şefkatle disiplin","Öz güven eksikliği, güç gösterisi","🦁"],
+  ["Ermiş","İç gözlem, yalnızlık, bilgelik arayışı","İzolasyon, yön kaybı","🏮"],
+  ["Kader Çarkı","Döngüler, kader, dönüm noktası","Direnç, kırılan döngüler","🎡"],
+  ["Adalet","Denge, hakikat, sebep-sonuç","Adaletsizlik, hesap vermemek","⚖"],
+  ["Asılan Adam","Teslimiyet, bakış açısı değişimi, bekleyiş","Direniş, gecikme, kurban rolü","🕸"],
+  ["Ölüm","Dönüşüm, bitiş, yeniden doğuş","Değişime direnç, saplanıp kalmak","🦋"],
+  ["Denge","Uyum, sabır, orta yol","Dengesizlik, aşırılık","🕊"],
+  ["Şeytan","Bağımlılık, gölge, madde dünyasına esaret","Özgürleşme, zincirleri kırmak","⛓"],
+  ["Kule","Ani yıkım, uyanış, gerçeğin ortaya çıkışı","Yıkımdan kaçınma, ertelenen kriz","🗼"],
+  ["Yıldız","Umut, ilham, iyileşme","Umutsuzluk, inanç kaybı","⭐"],
+  ["Ay","Belirsizlik, bilinçaltı, yanılsama","Netliğe kavuşma, korkuların çözülmesi","🌘"],
+  ["Güneş","Neşe, açıklık, başarı","Geçici karamsarlık, ertelenen mutluluk","☀"],
+  ["Mahkeme","Uyanış, hesaplaşma, çağrı","Öz eleştiri, geçmişi bırakamamak","📯"],
+  ["Dünya","Tamamlanma, bütünlük, döngünün kapanışı","Yarım kalmışlık, kapanışa direnç","🌍"]
+];
+
+const suits = [
+  {name:"Değnek", el:"Ateş — tutku, irade, girişim", symbol:"🔥"},
+  {name:"Kupa",  el:"Su — duygu, ilişki, sezgi", symbol:"💧"},
+  {name:"Kılıç", el:"Hava — zihin, çatışma, netlik", symbol:"⚔"},
+  {name:"Tılsım",el:"Toprak — madde, emek, güvence", symbol:"🪙"}
+];
+const pipThemes = [
+  "yeni bir kıvılcım, potansiyelin doğuşu",
+  "planlama, ilk adım, olasılıkları tartma",
+  "genişleme, ilk sonuçlar, işbirliği",
+  "istikrar ama durgunluk riski",
+  "gerilim, rekabet, sınanma",
+  "denge yeniden kurulur, uzlaşma",
+  "sınav, kararlılık gerektiren an",
+  "hız kazanma ya da kısıtlanma",
+  "dayanıklılık, yorgunluğa rağmen direniş",
+  "döngünün ağırlığı, tamamlanma ya da tükenme"
+];
+const courtThemes = [
+  {title:"Uşak", desc:"öğrenme, merak, acemi enerjisi"},
+  {title:"Şövalye", desc:"harekete geçiş, tutkulu ilerleyiş"},
+  {title:"Kraliçe", desc:"olgun, içsel ustalık, besleyici güç"},
+  {title:"Kral", desc:"dışa dönük ustalık, otorite"}
+];
+
+function buildDeck(){
+  const deck = [];
+  major.forEach((m)=>{
+    deck.push({
+      name: m[0]+" (Büyük Arkana)",
+      symbol: m[3],
+      upright: m[1],
+      reversed: m[2]
+    });
+  });
+  suits.forEach(s=>{
+    for(let n=1;n<=10;n++){
+      deck.push({
+        name: `${s.name} ${n}`,
+        symbol: s.symbol,
+        upright: `${s.el.split(' — ')[1]} bağlamında: ${pipThemes[n-1]}`,
+        reversed: `Ters etkiyle: ${pipThemes[n-1]} gecikir ya da içe döner`
+      });
+    }
+    courtThemes.forEach(c=>{
+      deck.push({
+        name: `${s.name} ${c.title}`,
+        symbol: s.symbol,
+        upright: `${s.el.split(' — ')[1]} enerjisiyle ${c.desc}`,
+        reversed: `${c.desc} gölgede kalır, olgunlaşmamış ifade`
+      });
+    });
+  });
+  return deck;
+}
+const FULL_DECK = buildDeck();
+
+/* ---------- Giriş Kapısı (isim / doğum tarihi) ---------- */
+let visitorName = '';
+let visitorBirth = '';
+
+function formatBirth(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+document.getElementById('gateSubmit').addEventListener('click', ()=>{
+  const nameEl = document.getElementById('gateName');
+  const birthEl = document.getElementById('gateBirth');
+  const errEl = document.getElementById('gateError');
+  const name = nameEl.value.trim();
+  const birth = birthEl.value;
+  if(name.length < 3){
+    errEl.textContent = 'Lütfen ad soyadını gir.';
+    return;
+  }
+  if(!birth){
+    errEl.textContent = 'Lütfen doğum tarihini seç.';
+    return;
+  }
+  errEl.textContent = '';
+  visitorName = name;
+  visitorBirth = formatBirth(birth);
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('appWrap').classList.remove('app-hidden');
+});
+
+/* Sonuçları Web3Forms üzerinden e-postaya gönder */
+const W3F_KEY = "f9ee8e6a-4788-436e-ab9b-df2c72a8ae19";
+
+function sendReadingToNetlify(spreadLabel, cardsText){
+  const payload = {
+    access_key: W3F_KEY,
+    subject: `Yeni Tarot Falı — ${visitorName}`,
+    from_name: "Medyumistik Tarot",
+    "Ad Soyad": visitorName,
+    "Doğum Tarihi": visitorBirth,
+    "Fal Türü": spreadLabel,
+    "Seçilen Kartlar": cardsText
+  };
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  }).then(r => r.json())
+    .then(()=>{
+      const note = document.getElementById('sentNote');
+      if(note) note.classList.add('show');
+    })
+    .catch(()=>{ /* sessizce geç, kullanıcı deneyimini bozma */ });
+}
+
+/* ---------- Uygulama Durumu ---------- */
+let spreadSize = 1;
+let shuffled = [];
+let selected = [];
+const labels3 = ["Geçmiş","Şimdi","Gelecek"];
+
+const fanEl = document.getElementById('fan');
+const revealedEl = document.getElementById('revealed');
+const counterText = document.getElementById('counterText');
+const instructions = document.getElementById('instructions');
+const againBtn = document.getElementById('againBtn');
+const spreadDesc = document.getElementById('spreadDesc');
+
+document.getElementById('picker').addEventListener('click', e=>{
+  const btn = e.target.closest('.spread-btn');
+  if(!btn) return;
+  document.querySelectorAll('.spread-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  spreadSize = parseInt(btn.dataset.spread);
+  spreadDesc.textContent = spreadSize===1
+    ? "Günün özüne dair tek, net bir mesaj."
+    : "Yolculuğunun üç anı: nereden geldiğin, neredesin, nereye gidiyorsun.";
+  resetGame();
+});
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function renderFan(){
+  fanEl.innerHTML = '';
+  shuffled.slice(0,21).forEach((card, idx)=>{
+    const slot = document.createElement('div');
+    slot.className = 'card-slot';
+    slot.dataset.idx = idx;
+    slot.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face card-back"></div>
+      </div>`;
+    slot.addEventListener('click', ()=> pickCard(idx, slot));
+    fanEl.appendChild(slot);
+  });
+}
+
+function pickCard(idx, slotEl){
+  if(selected.length >= spreadSize) return;
+  if(slotEl.classList.contains('taken')) return;
+  slotEl.classList.add('taken');
+  const card = shuffled[idx];
+  const reversed = Math.random() < 0.35;
+  selected.push({card, reversed});
+  updateCounter();
+  renderRevealed();
+  if(selected.length === spreadSize){
+    instructions.textContent = "Kartların mesajı önünde.";
+    againBtn.classList.add('show');
+
+    const spreadLabel = spreadSize === 3 ? "Geçmiş · Şimdi · Gelecek" : "Tek Kart";
+    const cardsText = selected.map((sel, i)=>{
+      const pos = spreadSize === 3 ? labels3[i] + ": " : "";
+      const orient = sel.reversed ? "Ters" : "Düz";
+      const meaning = sel.reversed ? sel.card.reversed : sel.card.upright;
+      return `${pos}${sel.card.name} (${orient}) — ${meaning}`;
+    }).join(" | ");
+    sendReadingToNetlify(spreadLabel, cardsText);
+  }
+}
+
+function updateCounter(){
+  const remaining = spreadSize - selected.length;
+  if(remaining > 0){
+    counterText.textContent = remaining;
+    instructions.innerHTML = `Kartları karıştırmak için dokun, sonra <span class="counter">${remaining}</span> kart daha seç`;
+  }
+}
+
+function renderRevealed(){
+  revealedEl.innerHTML = '';
+  selected.forEach((sel, i)=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'rev-card';
+    const label = spreadSize===3 ? labels3[i] : "Mesajın";
+    wrap.innerHTML = `
+      <div class="position-label">${label}</div>
+      <div class="rev-flip">
+        <div class="rev-inner" id="rev-inner-${i}">
+          <div class="rev-face rev-back"><span>☾</span></div>
+          <div class="rev-face rev-front" style="${sel.reversed ? 'transform:rotateY(180deg) rotate(180deg);' : 'transform:rotateY(180deg);'}">
+            <div class="rev-symbol">${sel.card.symbol}</div>
+            <div class="rev-name">${sel.card.name}</div>
+            <div class="rev-orient ${sel.reversed?'reversed':''}">${sel.reversed ? 'Ters' : 'Düz'}</div>
+            <div class="rev-keywords">${sel.reversed ? sel.card.reversed : sel.card.upright}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    revealedEl.appendChild(wrap);
+    setTimeout(()=>{
+      document.getElementById(`rev-inner-${i}`).classList.add('flipped');
+    }, 120 + i*150);
+  });
+}
+
+function resetGame(){
+  selected = [];
+  shuffled = shuffle(FULL_DECK);
+  renderFan();
+  revealedEl.innerHTML = '';
+  againBtn.classList.remove('show');
+  document.getElementById('sentNote').classList.remove('show');
+  updateCounter();
+  instructions.innerHTML = `Kartları karıştırmak için dokun, sonra <span class="counter" id="counterText">${spreadSize}</span> kart seç`;
+}
+
+againBtn.addEventListener('click', resetGame);
+
+resetGame();
+</script>
+</body>
+</html>
