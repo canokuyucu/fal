@@ -616,12 +616,12 @@ function renderFan(){
 function pickCard(idx, slotEl){
   if(selected.length >= spreadSize) return;
   if(slotEl.classList.contains('taken')) return;
-  slotEl.classList.add('taken');
   if(activeMode === "katina" && !document.getElementById('visitorQuestion').value.trim()){
     document.getElementById('visitorQuestion').focus();
     spreadDesc.textContent = "Önce aşk sorunu yaz, sonra kartlarını seç.";
     return;
   }
+  slotEl.classList.add('taken');
   const card = shuffled[idx];
   const reversed = Math.random() < 0.35;
   selected.push({card, reversed});
