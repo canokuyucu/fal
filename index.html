@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Medyumistik — Tarot Falı</title>
+<title>Medyumistik — Tarot ve Katina</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -259,12 +259,6 @@
   .mode-picker{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:32px 0 12px;}
   .mode-btn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;background:transparent;color:var(--cream);border:1px solid var(--line);padding:13px 22px;border-radius:2px;cursor:pointer;text-transform:uppercase;}
   .mode-btn.active{background:var(--gold);color:#150e08;border-color:var(--gold);}
-  .question-box{max-width:620px;margin:22px auto 18px;text-align:left;}
-  .question-box label{display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;}
-  .question-box textarea{width:100%;min-height:100px;resize:vertical;background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--cream);font-family:'EB Garamond',serif;font-size:17px;padding:13px 14px;border-radius:2px;outline:none;}
-  .question-box textarea:focus{border-color:var(--gold);}
-  .question-box textarea::placeholder{color:#5c4f3a;}
-  .question-hint{font-size:13px;color:#9a835e;font-style:italic;margin-top:7px;}
   .katina-front{height:100%;padding:12px;background:radial-gradient(ellipse at 50% 15%,#4a241a,#140806 72%);border:1px solid var(--gold-bright);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--gold-bright);}
   .katina-symbol{font-size:30px;margin-bottom:14px;}
   .katina-title{font-family:'Cinzel',serif;font-size:13px;line-height:1.35;}
@@ -306,11 +300,6 @@
   <div class="mode-picker" id="modePicker">
     <button class="mode-btn active" data-mode="tarot">Tarot</button>
     <button class="mode-btn" data-mode="katina">Katina Aşk Falı</button>
-  </div>
-  <div class="question-box" id="questionBox" hidden>
-    <label for="visitorQuestion">Aşk sorunu yaz</label>
-    <textarea id="visitorQuestion" maxlength="500" placeholder="Örn. Aklımdaki kişi bana geri dönecek mi?"></textarea>
-    <div class="question-hint">Sorunu net ve tek bir konuya odaklı yaz. Kartların ve sorun sana özel açılım için birlikte gönderilecek.</div>
   </div>
   <div class="picker" id="picker">
     <button class="spread-btn active" data-spread="1">Tek Kart</button>
@@ -453,40 +442,78 @@ function buildDeck(){
 const FULL_DECK = buildDeck();
 
 const KATINA_DECK = [
-  ["Aşk","Karşılıklı çekim, duygusal yakınlaşma ve kalbin açılması","Hisleri saklama, mesafe veya karşılıksız beklenti","♡"],
-  ["Erkek","Soruda geçen erkek figürü veya eril enerji","Uzak duran, kararsız ya da iletişime kapalı figür","♙"],
-  ["Kadın","Soruda geçen kadın figürü veya dişil enerji","Kendini geri çeken, kırgın ya da kararsız figür","♙"],
-  ["Sadakat","Güven, bağlılık ve ilişkiye emek verme","Güven sınavı, kuşku veya tutarsızlık","⚭"],
-  ["Haber","Mesaj, telefon veya beklenen bir konuşma","Geciken haber, yanlış anlaşılma veya sessizlik","✉"],
-  ["Yol","Buluşma, mesafe kapanması veya yeni bir adım","Ertelenen plan, uzaklık veya kararsızlık","⌁"],
-  ["Kavuşma","Yakınlaşma, görüşme ve aradaki buzların erimesi","Görüşmenin gecikmesi veya şartların henüz oluşmaması","☾"],
-  ["Ayrılık","Bir dönemin kapanması ve gerçeği görme","Bitmemiş bağ, geri dönüş düşüncesi veya kapanış korkusu","◇"],
-  ["Kıskançlık","Sahiplenme, yoğun ilgi ve hassasiyet","Kontrol etme, güvensizlik veya gereksiz şüphe","♧"],
-  ["Rakip","İlişkiyi etkileyen üçüncü kişi veya dış etken","Dış etkinin gücünü kaybetmesi ya da yanlış varsayım","♢"],
-  ["Evlilik","Ciddiyet, uzun vadeli birliktelik ve bağlılık","Taahhütten çekinme veya zamanlama sorunu","♔"],
-  ["Yüzük","Söz, anlaşma, ilişkiye isim koyma","Verilen sözün ertelenmesi veya belirsizlik","○"],
-  ["Kalp Kırıklığı","Geçmişten kalan yara ve duygusal hassasiyet","İyileşme, kabullenme ve yeniden güvenme","♡"],
-  ["Özlem","Birini düşünmek, hasret ve yeniden temas isteği","Duyguları bastırma veya geçmişe takılı kalma","☽"],
-  ["Gurur","Kendini koruma, sınır ve özsaygı","İnatlaşma, geri adım atamama veya savunmacılık","♜"],
-  ["Barışma","Konuşarak çözüm bulma ve ikinci şans","Güvenin henüz onarılmaması veya aynı döngüye dönme","✦"],
-  ["Gizli Duygular","Açıkça söylenmeyen hisler ve içsel çekim","Duyguları inkâr etme veya işaretleri yanlış okuma","☷"],
-  ["Bekleyiş","Sabır, zamana ihtiyaç ve gelişmeleri gözleme","Sonuç almak için fazla bekleme veya pasiflik","⌛"],
-  ["Engel","Dış koşullar, korkular veya çözülmesi gereken konu","Engelin aşılmaya başlaması veya yeni bir yol bulma","⛓"],
-  ["Kader Yolu","Önemli karşılaşma, dönüm noktası ve seçim","Aynı döngüye dönme veya seçimi erteleme","✧"],
-  ["Mutluluk","Neşe, karşılıklı sıcaklık ve olumlu gelişme","Geçici heves veya beklentiyi gerçekçi tutma","☀"],
-  ["Gözyaşı","Duygusal yükün görünür olması ve içini dökme","Rahatlama, kabullenme ve duygusal toparlanma","⋆"],
-  ["Anahtar","Çözüm, açık konuşma ve yeni bir kapı","Çözümün ertelenmesi veya farklı yaklaşım ihtiyacı","⚿"],
-  ["Mektup","Açıklama, itiraf veya önemli bir mesaj","Söylenmeyen sözler, eksik bilgi veya gecikme","✉"],
-  ["Güneşli Gün","Açıklık, umut ve ilişkinin önünü görme","Belirsizliğin sürmesi veya beklentileri yeniden düzenleme","☼"],
-  ["Gece","Sezgi, bilinmeyenler ve acele etmeden gözlem","Kaygı, kuruntu veya belirsizliği büyütme","☾"],
-  ["Ev","Güven, yuva, aile ve birlikte düzen kurma","Aile etkisi, huzursuzluk veya yerleşik düzende gerilim","⌂"],
-  ["Para","Maddi koşulların ilişkiye etkisi ve güvence","Maddi kaygılar veya öncelik çatışması","◇"],
-  ["Dost","Destek, samimi tavsiye ve güvenilir çevre","Araya giren fikirler veya sınır koyma ihtiyacı","♧"],
-  ["Düşünce","Bir konuyu sık sık zihinde tartma","Aşırı düşünme veya net karar verememe","☷"],
-  ["Karar","Açık seçim, netleşme ve sorumluluk alma","Kararsızlık, acele karar veya seçenekleri tartamama","⚖"],
-  ["Yeni Başlangıç","Taze bir sayfa, tanışma veya farklı yaklaşım","Geçmişi bırakmakta zorlanma veya hazır olmama","✦"],
-  ["Sonuç","Bir sürecin nereye evrildiğini değerlendirme","Kesin hüküm için erken olması veya son bir konuşma ihtiyacı","◎"]
-].map(([name,upright,reversed,symbol])=>({name:"Katina — "+name,upright,reversed,symbol,katina:true}));
+  // 28 element spirits: four series of seven cards
+  ...[
+    ["Selana","Abonoz · Toprak","Ağır duygular, sınav ve dayanıklılık","Yükü büyütmek, içe kapanmak","♜"],
+    ["Abonoz","Abonoz · Toprak","Sıkıntı, engel ve sabır gerektiren süreç","Engelin hafiflemesi, çözüm arayışı","♜"],
+    ["Tattaret","Abonoz · Toprak","Ciddiyet, sorumluluk ve kararlı duruş","Katılık, aşırı kontrol","♜"],
+    ["Assyranta","Abonoz · Toprak","Güçlü irade, otorite ve sınırlar","Baskı, güç çatışması","♜"],
+    ["Sunit","Abonoz · Toprak","Sadakat, sabır ve kalıcılık","Gecikme, inat","♜"],
+    ["Turan","Abonoz · Toprak","Mücadele, direnç ve kararlılık","Yıpranma, gereksiz mücadele","♜"],
+    ["Munzur","Abonoz · Toprak","Ağır ilerleyen konular ve gerçekçilik","Karamsarlık, tıkanıklık","♜"],
+    ["Yakut","Yakut · Ateş","Tutku, çekim ve cesaret","Acelecilik, taşkınlık","♥"],
+    ["Ariman","Yakut · Ateş","Güçlü çekim, girişim ve hareket","Bencillik, dürtüsel davranış","♥"],
+    ["Selçukassa","Yakut · Ateş","Karizma, atılım ve cesur seçim","Gösteriş, sabırsızlık","♥"],
+    ["Urmia","Yakut · Ateş","İstek, canlılık ve yeni gelişme","Dengesiz heves, acele karar","♥"],
+    ["Saah","Yakut · Ateş","Cesaret, kararlılık ve doğrudanlık","Öfke, çatışma","♥"],
+    ["Tagral","Yakut · Ateş","İnisiyatif, hareket ve tutku","Kontrolsüz enerji","♥"],
+    ["Kalif","Yakut · Ateş","Güç, özgüven ve hedefe yönelme","Gurur, baskınlık","♥"],
+    ["Bedes","Zümrüt · Su","Duygular, şefkat ve bağlılık","Alınganlık, güvensizlik","♧"],
+    ["Zümrüt","Zümrüt · Su","Şifa, huzur ve duygusal yenilenme","Kırgınlık, iyileşmeyi erteleme","♧"],
+    ["Mida","Zümrüt · Su","Sezgi, duygusal derinlik ve hassasiyet","Duyguları saklamak","♧"],
+    ["Parsadra","Zümrüt · Su","Sadakat, yakınlık ve duygusal destek","Bağımlılık, kıskançlık","♧"],
+    ["Aral","Zümrüt · Su","Uyum, karşılıklı anlayış ve yumuşama","Mesafe, kararsızlık","♧"],
+    ["Eprahhat","Zümrüt · Su","Duygusal açıklık ve içgörü","Yanlış anlama, bulanıklık","♧"],
+    ["Hesse","Zümrüt · Su","Güven, bağlılık ve iç huzur","Kuşku, kırılganlık","♧"],
+    ["İsfahan","Elmas · Hava","Zihin açıklığı, para ve özgürlük","Çıkar çatışması, kararsızlık","♢"],
+    ["Elmas","Elmas · Hava","Maddi konular, akıl ve fırsat","Maddi kaygı, aşırı hesap","♢"],
+    ["Dastar","Elmas · Hava","Bağımsızlık, karar ve hareket alanı","Mesafe, bencil seçim","♢"],
+    ["Adhamdeva","Elmas · Hava","Zekâ, strateji ve çözüm bulma","Hesapçılık, fazla düşünme","♢"],
+    ["Gamhat","Elmas · Hava","Fırsat, çıkar dengesi ve pratiklik","Çıkarcılık, güvensizlik","♢"],
+    ["Dare","Elmas · Hava","Özgürleşme, netlik ve seçim","Dağınıklık, kararsızlık","♢"],
+    ["Zara","Elmas · Hava","Akıl, bağımsızlık ve yeni bakış","Soğukluk, iletişim kopukluğu","♢"]
+  ].map(([name,series,upright,reversed,symbol])=>({name,series,upright,reversed,symbol,katina:true})),
+  // 35 illustrated situation cards
+  ...[
+    ["Çapa","İstikrar, bağlılık ve sağlam zemin","Takılı kalmak, ilerleyememek","⚓"],
+    ["Tilki","Kurnazlık, dikkat ve niyetleri sorgulama","Açığa çıkan oyun, yanlış kuşku","♧"],
+    ["Çiçekler","Sevinç, iltifat ve güzel gelişme","Geçici mutluluk, beklenti","✿"],
+    ["Yıldızlar","Umut, ilham ve yolun açılması","Umut kaybı, yön arayışı","✧"],
+    ["Alyans","Bağlılık, söz ve ciddi birliktelik","Sözün tutulmaması, belirsizlik","○"],
+    ["Dağ","Büyük engel, sabır ve aşılması gereken konu","Engelin çözülmesi ya da gecikme","▲"],
+    ["Yatağan","Keskin karar, gerilim ve yüzleşme","Sertliğin azalması, çatışmadan kaçış","⚔"],
+    ["Mektup","Haber, mesaj ve açıklama","Geciken haber, eksik bilgi","✉"],
+    ["Ağaç","Kök salma, gelişim ve sağlamlaşma","Yavaşlama, ihmal","♧"],
+    ["Derviş","İçgörü, rehberlik ve deneyimden ders","Yalnızlık, yönünü kaybetme","☼"],
+    ["Yol","Seçenek, hareket ve yeni rota","Kararsızlık, ertelenen yol","⌁"],
+    ["Güneş","Açıklık, başarı ve canlılık","Geçici gölge, gecikmiş sevinç","☀"],
+    ["Deve","Yük taşıma, sabır ve uzun yol","Aşırı yük, yorgunluk","♧"],
+    ["Kalp","Aşk, yakınlık ve duygusal bağ","Kırgınlık, kapanan kalp","♡"],
+    ["Bahçeler","Sosyal çevre, buluşma ve görünürlük","Dedikodu, çevre baskısı","❀"],
+    ["Anahtar","Çözüm, kapı açılması ve fırsat","Çözümün gecikmesi","⚿"],
+    ["Kitap","Sır, bilgi ve öğrenilecek gerçek","Gizlenen bilgi, yanlış yorum","▤"],
+    ["Baykuş","Dikkat, gözlem ve sezgisel bilgelik","Kuruntu, yanlış çıkarım","◉"],
+    ["Mezar","Bitiş, kapanış ve geçmişi geride bırakma","Geçmişe takılmak, tamamlanmamışlık","▱"],
+    ["Yelkenli","Yolculuk, değişim ve uzaklardan gelişme","Gecikme, yön değişikliği","⛵"],
+    ["Nil Nehri","Akış, bereket ve uzun vadeli gelişme","Akışın kesilmesi, duygusal taşma","≈"],
+    ["Afyon","Yanılsama, cazibe ve gerçeklerden kaçış","Sis perdesinin kalkması","☁"],
+    ["Kız Çocuğu","Yeni başlangıç, masumiyet ve hassasiyet","Olgunlaşmamışlık, korunma ihtiyacı","♙"],
+    ["Fareler","Küçük kayıplar, kaygı ve yıpranma","Kaybı durdurma, toparlanma","♧"],
+    ["Kapı","Yeni fırsat, geçiş ve karar eşiği","Kapalı kapı, yanlış zamanlama","▣"],
+    ["Kale","Korunma, sınır ve güçlü duruş","İzolasyon, savunmaya çekilme","♜"],
+    ["Samyeli","Ani değişim, sarsıntı ve beklenmedik etki","Fırtınanın dinmesi, toparlanma","〰"],
+    ["Köpek","Dostluk, sadakat ve güvenilir destek","Sadakat sınavı, hayal kırıklığı","♧"],
+    ["Ev","Yuva, aile ve güven duygusu","Ev içi gerginlik, huzursuzluk","⌂"],
+    ["Haç","Zorlu sorumluluk, sınav ve yük","Yükün hafiflemesi, kabullenme","✚"],
+    ["Bulutlar","Belirsizlik, kafa karışıklığı ve netleşme ihtiyacı","Sis dağılması ya da karışıklığın sürmesi","☁"],
+    ["Ay","Duygular, sezgi ve gizli kalanlar","Kuruntu, duygusal dalgalanma","☾"],
+    ["Yılan","Kıskançlık, karmaşıklık ve dikkat gerektiren durum","Tehlikeyi fark etmek, düğümün çözülmesi","♧"],
+    ["Süpürge","Tartışma, temizlik ve eskiyi uzaklaştırma","Aynı tartışmayı tekrarlamak","〰"],
+    ["Balık","Bolluk, kazanç ve akış","Maddi dalgalanma, savurganlık","♧"]
+  ].map(([name,upright,reversed,symbol])=>({name,series:"Desenli kart",upright,reversed,symbol,katina:true})),
+  {name:"Atart",series:"Büyücü ruhu",upright:"Şansın, korumanın ve destekleyici gelişmelerin öne çıkması",reversed:"Fırsatları gözden kaçırma, desteğin zayıflaması",symbol:"☽",katina:true},
+  {name:"Valide",series:"Büyücü ruhu",upright:"Baskı, uyarı ve dikkatli olunması gereken etki",reversed:"Baskının azalması veya uyarıyı görmezden gelme",symbol:"☽",katina:true}
+];
 
 /* ---------- Giriş Kapısı (isim / doğum tarihi) ---------- */
 let visitorName = '';
@@ -524,7 +551,6 @@ const W3F_KEY = "f9ee8e6a-4788-436e-ab9b-df2c72a8ae19";
 
 function sendReadingToNetlify(spreadLabel, cardsText){
   const modeLabel = activeMode === "katina" ? "Katina Aşk Falı" : "Tarot";
-  const question = activeMode === "katina" ? document.getElementById('visitorQuestion').value.trim() : "";
   const payload = {
     access_key: W3F_KEY,
     subject: `Yeni ${modeLabel} — ${visitorName}`,
@@ -532,7 +558,6 @@ function sendReadingToNetlify(spreadLabel, cardsText){
     "Ad Soyad": visitorName,
     "Doğum Tarihi": visitorBirth,
     "Fal Türü": `${modeLabel} — ${spreadLabel}`,
-    "Soru": question || "Tarot açılımı için soru belirtilmedi.",
     "Seçilen Kartlar": cardsText
   };
   fetch('https://api.web3forms.com/submit', {
@@ -556,7 +581,6 @@ let spreadSize = 1;
 let shuffled = [];
 let selected = [];
 const labels3 = ["Geçmiş","Şimdi","Gelecek"];
-const katinaLabels3 = ["Durum","Duygular","Olası yön"];
 
 const fanEl = document.getElementById('fan');
 const revealedEl = document.getElementById('revealed');
@@ -570,9 +594,15 @@ document.getElementById('modePicker').addEventListener('click', e=>{
   if(!btn) return;
   activeMode = btn.dataset.mode;
   document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b===btn));
-  document.getElementById('questionBox').hidden = activeMode !== "katina";
+  if(activeMode === "katina") {
+    spreadSize = 3;
+    document.querySelectorAll('.spread-btn').forEach(b=>b.classList.toggle('active', Number(b.dataset.spread)===3));
+  } else {
+    spreadSize = 1;
+    document.querySelectorAll('.spread-btn').forEach(b=>b.classList.toggle('active', Number(b.dataset.spread)===1));
+  }
   spreadDesc.textContent = activeMode === "katina"
-    ? "Sorunu yaz, ardından Katina kartlarını seç."
+    ? "Katina destesinden üç gerçek kart seç."
     : (spreadSize===1 ? "Günün özüne dair tek, net bir mesaj." : "Geçmiş, şimdi ve olası gelecek için üç kart seç.");
   resetGame();
 });
@@ -584,7 +614,7 @@ document.getElementById('picker').addEventListener('click', e=>{
   btn.classList.add('active');
   spreadSize = parseInt(btn.dataset.spread);
   spreadDesc.textContent = activeMode === "katina"
-    ? "Sorunu yaz, ardından Katina kartlarını seç."
+    ? "Katina destesinden kartlarını seç; sorunu ayrıca Medyumistik'e ilet."
     : (spreadSize===1 ? "Günün özüne dair tek, net bir mesaj." : "Geçmiş, şimdi ve olası gelecek için üç kart seç.");
   resetGame();
 });
@@ -616,11 +646,6 @@ function renderFan(){
 function pickCard(idx, slotEl){
   if(selected.length >= spreadSize) return;
   if(slotEl.classList.contains('taken')) return;
-  if(activeMode === "katina" && !document.getElementById('visitorQuestion').value.trim()){
-    document.getElementById('visitorQuestion').focus();
-    spreadDesc.textContent = "Önce aşk sorunu yaz, sonra kartlarını seç.";
-    return;
-  }
   slotEl.classList.add('taken');
   const card = shuffled[idx];
   const reversed = Math.random() < 0.35;
@@ -634,7 +659,7 @@ function pickCard(idx, slotEl){
     const spreadLabel = spreadSize === 3
       ? (activeMode === "katina" ? "3 Kartlık Katina Açılımı" : "Geçmiş · Şimdi · Gelecek")
       : (activeMode === "katina" ? "Tek Kartlık Katina Açılımı" : "Tek Kart");
-    const labels = activeMode === "katina" ? katinaLabels3 : labels3;
+    const labels = activeMode === "katina" ? ["Kart 1","Kart 2","Kart 3"] : labels3;
     const cardsText = selected.map((sel, i)=>{
       const pos = spreadSize === 3 ? labels[i] + ": " : "";
       const orient = sel.reversed ? "Ters" : "Düz";
@@ -658,7 +683,7 @@ function renderRevealed(){
   selected.forEach((sel, i)=>{
     const wrap = document.createElement('div');
     wrap.className = 'rev-card';
-    const labels = activeMode === "katina" ? katinaLabels3 : labels3;
+    const labels = activeMode === "katina" ? ["Kart 1","Kart 2","Kart 3"] : labels3;
     const label = spreadSize===3 ? labels[i] : "Mesajın";
     const front = sel.card.katina
       ? `<div class="katina-front"><div class="katina-symbol">${sel.card.symbol}</div><div class="katina-title">${sel.card.name.replace("Katina — ","")}</div><small>MEDYUMİSTİK · KATİNA</small></div>`
