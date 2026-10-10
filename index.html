@@ -255,6 +255,20 @@
     opacity:0; transition:opacity .5s;
   }
   .sent-note.show{ opacity:1; }
+
+  .mode-picker{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:32px 0 12px;}
+  .mode-btn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;background:transparent;color:var(--cream);border:1px solid var(--line);padding:13px 22px;border-radius:2px;cursor:pointer;text-transform:uppercase;}
+  .mode-btn.active{background:var(--gold);color:#150e08;border-color:var(--gold);}
+  .question-box{max-width:620px;margin:22px auto 18px;text-align:left;}
+  .question-box label{display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;}
+  .question-box textarea{width:100%;min-height:100px;resize:vertical;background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--cream);font-family:'EB Garamond',serif;font-size:17px;padding:13px 14px;border-radius:2px;outline:none;}
+  .question-box textarea:focus{border-color:var(--gold);}
+  .question-box textarea::placeholder{color:#5c4f3a;}
+  .question-hint{font-size:13px;color:#9a835e;font-style:italic;margin-top:7px;}
+  .katina-front{height:100%;padding:12px;background:radial-gradient(ellipse at 50% 15%,#4a241a,#140806 72%);border:1px solid var(--gold-bright);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--gold-bright);}
+  .katina-symbol{font-size:30px;margin-bottom:14px;}
+  .katina-title{font-family:'Cinzel',serif;font-size:13px;line-height:1.35;}
+  .katina-front small{font-size:10px;letter-spacing:.12em;margin-top:10px;color:#b9a17d;}
 </style>
 </head>
 <body>
@@ -289,9 +303,18 @@
     <div class="rule"></div>
   </header>
 
+  <div class="mode-picker" id="modePicker">
+    <button class="mode-btn active" data-mode="tarot">Tarot</button>
+    <button class="mode-btn" data-mode="katina">Katina Aşk Falı</button>
+  </div>
+  <div class="question-box" id="questionBox" hidden>
+    <label for="visitorQuestion">Aşk sorunu yaz</label>
+    <textarea id="visitorQuestion" maxlength="500" placeholder="Örn. Aklımdaki kişi bana geri dönecek mi?"></textarea>
+    <div class="question-hint">Sorunu net ve tek bir konuya odaklı yaz. Kartların ve sorun sana özel açılım için birlikte gönderilecek.</div>
+  </div>
   <div class="picker" id="picker">
     <button class="spread-btn active" data-spread="1">Tek Kart</button>
-    <button class="spread-btn" data-spread="3">Geçmiş · Şimdi · Gelecek</button>
+    <button class="spread-btn" data-spread="3">3 Kartlık Açılım</button>
   </div>
   <p class="spread-desc" id="spreadDesc">Günün özüne dair tek, net bir mesaj.</p>
 
@@ -429,6 +452,42 @@ function buildDeck(){
 }
 const FULL_DECK = buildDeck();
 
+const KATINA_DECK = [
+  ["Aşk","Karşılıklı çekim, duygusal yakınlaşma ve kalbin açılması","Hisleri saklama, mesafe veya karşılıksız beklenti","♡"],
+  ["Erkek","Soruda geçen erkek figürü veya eril enerji","Uzak duran, kararsız ya da iletişime kapalı figür","♙"],
+  ["Kadın","Soruda geçen kadın figürü veya dişil enerji","Kendini geri çeken, kırgın ya da kararsız figür","♙"],
+  ["Sadakat","Güven, bağlılık ve ilişkiye emek verme","Güven sınavı, kuşku veya tutarsızlık","⚭"],
+  ["Haber","Mesaj, telefon veya beklenen bir konuşma","Geciken haber, yanlış anlaşılma veya sessizlik","✉"],
+  ["Yol","Buluşma, mesafe kapanması veya yeni bir adım","Ertelenen plan, uzaklık veya kararsızlık","⌁"],
+  ["Kavuşma","Yakınlaşma, görüşme ve aradaki buzların erimesi","Görüşmenin gecikmesi veya şartların henüz oluşmaması","☾"],
+  ["Ayrılık","Bir dönemin kapanması ve gerçeği görme","Bitmemiş bağ, geri dönüş düşüncesi veya kapanış korkusu","◇"],
+  ["Kıskançlık","Sahiplenme, yoğun ilgi ve hassasiyet","Kontrol etme, güvensizlik veya gereksiz şüphe","♧"],
+  ["Rakip","İlişkiyi etkileyen üçüncü kişi veya dış etken","Dış etkinin gücünü kaybetmesi ya da yanlış varsayım","♢"],
+  ["Evlilik","Ciddiyet, uzun vadeli birliktelik ve bağlılık","Taahhütten çekinme veya zamanlama sorunu","♔"],
+  ["Yüzük","Söz, anlaşma, ilişkiye isim koyma","Verilen sözün ertelenmesi veya belirsizlik","○"],
+  ["Kalp Kırıklığı","Geçmişten kalan yara ve duygusal hassasiyet","İyileşme, kabullenme ve yeniden güvenme","♡"],
+  ["Özlem","Birini düşünmek, hasret ve yeniden temas isteği","Duyguları bastırma veya geçmişe takılı kalma","☽"],
+  ["Gurur","Kendini koruma, sınır ve özsaygı","İnatlaşma, geri adım atamama veya savunmacılık","♜"],
+  ["Barışma","Konuşarak çözüm bulma ve ikinci şans","Güvenin henüz onarılmaması veya aynı döngüye dönme","✦"],
+  ["Gizli Duygular","Açıkça söylenmeyen hisler ve içsel çekim","Duyguları inkâr etme veya işaretleri yanlış okuma","☷"],
+  ["Bekleyiş","Sabır, zamana ihtiyaç ve gelişmeleri gözleme","Sonuç almak için fazla bekleme veya pasiflik","⌛"],
+  ["Engel","Dış koşullar, korkular veya çözülmesi gereken konu","Engelin aşılmaya başlaması veya yeni bir yol bulma","⛓"],
+  ["Kader Yolu","Önemli karşılaşma, dönüm noktası ve seçim","Aynı döngüye dönme veya seçimi erteleme","✧"],
+  ["Mutluluk","Neşe, karşılıklı sıcaklık ve olumlu gelişme","Geçici heves veya beklentiyi gerçekçi tutma","☀"],
+  ["Gözyaşı","Duygusal yükün görünür olması ve içini dökme","Rahatlama, kabullenme ve duygusal toparlanma","⋆"],
+  ["Anahtar","Çözüm, açık konuşma ve yeni bir kapı","Çözümün ertelenmesi veya farklı yaklaşım ihtiyacı","⚿"],
+  ["Mektup","Açıklama, itiraf veya önemli bir mesaj","Söylenmeyen sözler, eksik bilgi veya gecikme","✉"],
+  ["Güneşli Gün","Açıklık, umut ve ilişkinin önünü görme","Belirsizliğin sürmesi veya beklentileri yeniden düzenleme","☼"],
+  ["Gece","Sezgi, bilinmeyenler ve acele etmeden gözlem","Kaygı, kuruntu veya belirsizliği büyütme","☾"],
+  ["Ev","Güven, yuva, aile ve birlikte düzen kurma","Aile etkisi, huzursuzluk veya yerleşik düzende gerilim","⌂"],
+  ["Para","Maddi koşulların ilişkiye etkisi ve güvence","Maddi kaygılar veya öncelik çatışması","◇"],
+  ["Dost","Destek, samimi tavsiye ve güvenilir çevre","Araya giren fikirler veya sınır koyma ihtiyacı","♧"],
+  ["Düşünce","Bir konuyu sık sık zihinde tartma","Aşırı düşünme veya net karar verememe","☷"],
+  ["Karar","Açık seçim, netleşme ve sorumluluk alma","Kararsızlık, acele karar veya seçenekleri tartamama","⚖"],
+  ["Yeni Başlangıç","Taze bir sayfa, tanışma veya farklı yaklaşım","Geçmişi bırakmakta zorlanma veya hazır olmama","✦"],
+  ["Sonuç","Bir sürecin nereye evrildiğini değerlendirme","Kesin hüküm için erken olması veya son bir konuşma ihtiyacı","◎"]
+].map(([name,upright,reversed,symbol])=>({name:"Katina — "+name,upright,reversed,symbol,katina:true}));
+
 /* ---------- Giriş Kapısı (isim / doğum tarihi) ---------- */
 let visitorName = '';
 let visitorBirth = '';
@@ -464,13 +523,16 @@ document.getElementById('gateSubmit').addEventListener('click', ()=>{
 const W3F_KEY = "f9ee8e6a-4788-436e-ab9b-df2c72a8ae19";
 
 function sendReadingToNetlify(spreadLabel, cardsText){
+  const modeLabel = activeMode === "katina" ? "Katina Aşk Falı" : "Tarot";
+  const question = activeMode === "katina" ? document.getElementById('visitorQuestion').value.trim() : "";
   const payload = {
     access_key: W3F_KEY,
-    subject: `Yeni Tarot Falı — ${visitorName}`,
-    from_name: "Medyumistik Tarot",
+    subject: `Yeni ${modeLabel} — ${visitorName}`,
+    from_name: "Medyumistik",
     "Ad Soyad": visitorName,
     "Doğum Tarihi": visitorBirth,
-    "Fal Türü": spreadLabel,
+    "Fal Türü": `${modeLabel} — ${spreadLabel}`,
+    "Soru": question || "Tarot açılımı için soru belirtilmedi.",
     "Seçilen Kartlar": cardsText
   };
   fetch('https://api.web3forms.com/submit', {
@@ -489,10 +551,12 @@ function sendReadingToNetlify(spreadLabel, cardsText){
 }
 
 /* ---------- Uygulama Durumu ---------- */
+let activeMode = "tarot";
 let spreadSize = 1;
 let shuffled = [];
 let selected = [];
 const labels3 = ["Geçmiş","Şimdi","Gelecek"];
+const katinaLabels3 = ["Durum","Duygular","Olası yön"];
 
 const fanEl = document.getElementById('fan');
 const revealedEl = document.getElementById('revealed');
@@ -501,15 +565,27 @@ const instructions = document.getElementById('instructions');
 const againBtn = document.getElementById('againBtn');
 const spreadDesc = document.getElementById('spreadDesc');
 
+document.getElementById('modePicker').addEventListener('click', e=>{
+  const btn = e.target.closest('.mode-btn');
+  if(!btn) return;
+  activeMode = btn.dataset.mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b===btn));
+  document.getElementById('questionBox').hidden = activeMode !== "katina";
+  spreadDesc.textContent = activeMode === "katina"
+    ? "Sorunu yaz, ardından Katina kartlarını seç."
+    : (spreadSize===1 ? "Günün özüne dair tek, net bir mesaj." : "Geçmiş, şimdi ve olası gelecek için üç kart seç.");
+  resetGame();
+});
+
 document.getElementById('picker').addEventListener('click', e=>{
   const btn = e.target.closest('.spread-btn');
   if(!btn) return;
   document.querySelectorAll('.spread-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   spreadSize = parseInt(btn.dataset.spread);
-  spreadDesc.textContent = spreadSize===1
-    ? "Günün özüne dair tek, net bir mesaj."
-    : "Yolculuğunun üç anı: nereden geldiğin, neredesin, nereye gidiyorsun.";
+  spreadDesc.textContent = activeMode === "katina"
+    ? "Sorunu yaz, ardından Katina kartlarını seç."
+    : (spreadSize===1 ? "Günün özüne dair tek, net bir mesaj." : "Geçmiş, şimdi ve olası gelecek için üç kart seç.");
   resetGame();
 });
 
@@ -541,6 +617,11 @@ function pickCard(idx, slotEl){
   if(selected.length >= spreadSize) return;
   if(slotEl.classList.contains('taken')) return;
   slotEl.classList.add('taken');
+  if(activeMode === "katina" && !document.getElementById('visitorQuestion').value.trim()){
+    document.getElementById('visitorQuestion').focus();
+    spreadDesc.textContent = "Önce aşk sorunu yaz, sonra kartlarını seç.";
+    return;
+  }
   const card = shuffled[idx];
   const reversed = Math.random() < 0.35;
   selected.push({card, reversed});
@@ -550,9 +631,12 @@ function pickCard(idx, slotEl){
     instructions.textContent = "Kartların mesajı önünde.";
     againBtn.classList.add('show');
 
-    const spreadLabel = spreadSize === 3 ? "Geçmiş · Şimdi · Gelecek" : "Tek Kart";
+    const spreadLabel = spreadSize === 3
+      ? (activeMode === "katina" ? "3 Kartlık Katina Açılımı" : "Geçmiş · Şimdi · Gelecek")
+      : (activeMode === "katina" ? "Tek Kartlık Katina Açılımı" : "Tek Kart");
+    const labels = activeMode === "katina" ? katinaLabels3 : labels3;
     const cardsText = selected.map((sel, i)=>{
-      const pos = spreadSize === 3 ? labels3[i] + ": " : "";
+      const pos = spreadSize === 3 ? labels[i] + ": " : "";
       const orient = sel.reversed ? "Ters" : "Düz";
       const meaning = sel.reversed ? sel.card.reversed : sel.card.upright;
       return `${pos}${sel.card.name} (${orient}) — ${meaning}`;
@@ -574,14 +658,18 @@ function renderRevealed(){
   selected.forEach((sel, i)=>{
     const wrap = document.createElement('div');
     wrap.className = 'rev-card';
-    const label = spreadSize===3 ? labels3[i] : "Mesajın";
+    const labels = activeMode === "katina" ? katinaLabels3 : labels3;
+    const label = spreadSize===3 ? labels[i] : "Mesajın";
+    const front = sel.card.katina
+      ? `<div class="katina-front"><div class="katina-symbol">${sel.card.symbol}</div><div class="katina-title">${sel.card.name.replace("Katina — ","")}</div><small>MEDYUMİSTİK · KATİNA</small></div>`
+      : `<img src="${sel.card.img}" alt="${sel.card.name}" loading="lazy">`;
     wrap.innerHTML = `
       <div class="position-label">${label}</div>
       <div class="rev-flip">
         <div class="rev-inner" id="rev-inner-${i}">
           <div class="rev-face rev-back"><span>☾</span></div>
-          <div class="rev-face rev-front" style="${sel.reversed ? 'transform:rotateY(180deg) rotate(180deg);' : 'transform:rotateY(180deg);'}">
-            <img src="${sel.card.img}" alt="${sel.card.name}" loading="lazy">
+          <div class="rev-face rev-front" style="${sel.reversed && !sel.card.katina ? 'transform:rotateY(180deg) rotate(180deg);' : 'transform:rotateY(180deg);'}">
+            ${front}
           </div>
         </div>
       </div>
@@ -604,7 +692,7 @@ function renderRevealed(){
 
 function resetGame(){
   selected = [];
-  shuffled = shuffle(FULL_DECK);
+  shuffled = shuffle(activeMode === "katina" ? KATINA_DECK : FULL_DECK);
   renderFan();
   revealedEl.innerHTML = '';
   againBtn.classList.remove('show');
