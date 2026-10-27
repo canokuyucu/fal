@@ -542,9 +542,22 @@ document.getElementById('gateSubmit').addEventListener('click', ()=>{
   errEl.textContent = '';
   visitorName = name;
   visitorBirth = formatBirth(birth);
+  panelKaydi({ tip: 'giris', ad: visitorName, dogum: visitorBirth });
   document.getElementById('gate').classList.add('hidden');
   document.getElementById('appWrap').classList.remove('app-hidden');
 });
+
+/* Giriş ve fal bilgisini yönetim paneline kaydet (sadece Cloudflare adresinde çalışır) */
+function panelKaydi(veri){
+  try{
+    fetch('/api/olay', {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(veri)
+    }).catch(()=>{});
+  }catch(e){}
+}
 
 /* Sonuçları Web3Forms üzerinden e-postaya gönder */
 const W3F_KEY = "f9ee8e6a-4788-436e-ab9b-df2c72a8ae19";
@@ -667,6 +680,17 @@ function pickCard(idx, slotEl){
       return `${pos}${sel.card.name} (${orient}) — ${meaning}`;
     }).join(" | ");
     sendReadingToNetlify(spreadLabel, cardsText);
+    panelKaydi({
+      tip: 'fal',
+      ad: visitorName,
+      dogum: visitorBirth,
+      mod: activeMode === "katina" ? "Katina Aşk Falı" : "Tarot",
+      acilim: spreadLabel,
+      kartlar: selected.map((sel, i)=>{
+        const pos = spreadSize === 3 ? labels[i] + ": " : "";
+        return `${pos}${sel.card.name} (${sel.reversed ? "Ters" : "Düz"})`;
+      }).join(" | ")
+    });
   }
 }
 
