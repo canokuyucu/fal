@@ -1,0 +1,12 @@
+{
+  "name": "fal",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-23",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "kv_namespaces": [{ "binding": "ZIYARET" }],
+  "observability": { "enabled": true }
+}
